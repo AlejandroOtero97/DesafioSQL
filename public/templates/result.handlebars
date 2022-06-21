@@ -1,0 +1,26 @@
+<div>
+    {{#if hayProductos}}
+    <div class="table-responsive">
+        <table class="table table-dark text-center">
+            <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+            </tr>
+            {{#each array_productos}}
+                <tr>
+                    <td>{{thumbnail}}</td>
+                    <td>{{title}}</td>
+                    <td>$ {{price}}</td>
+
+                    <td>
+                        <button class="btn btn-danger" onclick="eliminarProducto({{id}})">Eliminar</button>
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    {{else}}
+        <p class="alert alert-warning">No hay Artículos para mostrar...</p>
+    {{/if}}
+</div>
+</div>

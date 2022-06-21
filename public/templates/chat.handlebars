@@ -1,0 +1,12 @@
+<div>
+    {{#if messageCount}}
+        <div>
+            {{#each MessagesData}}
+                <p>
+                    <strong>{{this.user}}: </strong> {{this.mensaje}}
+                </p>
+            {{/each}}
+        </div>
+    {{/if}}
+</div>
+
