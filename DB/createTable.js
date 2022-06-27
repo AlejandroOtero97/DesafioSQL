@@ -1,5 +1,4 @@
 
-
 export const createTableProductos = (knex, tabla) => {
     knex.schema.hasTable(tabla)
         .then(exists => {
@@ -7,7 +6,7 @@ export const createTableProductos = (knex, tabla) => {
                 knex.schema.createTable(tabla, tabla => {
                     tabla.increments('id'),
                         tabla.string("title"),
-                        tabla.decimal('price', 8, 2),
+                        tabla.decimal('price', 5, 1),
                         tabla.string("thumbnail")
                 }).then(() => {
                     console.log(`Tabla ${tabla} creada!`)

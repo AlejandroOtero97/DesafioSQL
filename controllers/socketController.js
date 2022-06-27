@@ -2,7 +2,6 @@ import KnexConfig from './knexController.js';
 import { createTableProductos, createTableMensajes } from '../DB/createTable.js';
 import { productsMariadb, messagesSql } from "../DB/config.js"
 
-
 const productos = new KnexConfig(productsMariadb, "productos", createTableProductos);
 const mensajes = new KnexConfig(messagesSql, "mensajes", createTableMensajes);
 

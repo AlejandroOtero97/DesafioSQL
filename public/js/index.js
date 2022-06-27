@@ -1,32 +1,35 @@
 const socket = io();
 
-socket.on('connectionToServer', async ({ array_productos, MessagesData }) => {
-    await mostrar('formProducts', 'templates/form.handlebars', {});
-    await mostrar('mensajes', 'templates/messages.handlebars', {});
-    productsUpdate(array_productos);
+socket.on('connectionToServer', async ({ productsData, MessagesData }) => {
+    await resolveData('formProducts', 'templates/products.handlebars', {});
+    await resolveData('mensajes', 'templates/messages.handlebars', {});
+    productsUpdate(productsData);
     messagesUpdate(MessagesData);
     getProductsValue();
     getMessagesValue();
 });
 
-socket.on('actualizarTabla', ({ array_productos }) => {
-    productsUpdate(array_productos);
+socket.on('actualizarTabla', ({ productsData }) => {
+    productsUpdate(productsData);
 });
 
 socket.on('actualizarMensajes', ({ MessagesData }) => {
     messagesUpdate(MessagesData);
 })
 
-const productsUpdate = async (array_productos) => {
-    let factor = { titulo:"Productos", 
-                    array_productos };
-    mostrar('tableProducts', 'templates/table.handlebars', factor);
+const productsUpdate = async (productsData) => {
+    let factor = {  titulo:"Productos", 
+                    productsData, 
+                    hayProductos: productsData.length > 0, 
+                    total: productsData.length 
+                };
+    resolveData('tableProducts', 'templates/result.handlebars', factor);
 }
 
 const messagesUpdate = async (MessagesData) => {
     let factor = {  MessagesData, 
                     messageCount: MessagesData.length > 0 }
-    await mostrar('tableMensajes', 'templates/tableMessages.handlebars', factor);
+    await resolveData('tableMensajes', 'templates/chat.handlebars', factor);
 }
 
 function getProductsValue() {
@@ -38,7 +41,7 @@ function getProductsValue() {
         if(title.length>0 && price.length>0 && thumbnail.length>0){
             socket.emit('agregarProducto', { title, price, thumbnail })
         } else {
-            alert('Todos los campos son obligatorios')
+            alert('Fill all the fields')
         }
     })
 }
@@ -51,12 +54,12 @@ function getMessagesValue() {
         if(user.length>0 && mensaje.length>0){
             socket.emit('enviarMensaje', { user, mensaje })
         } else {
-            alert('Todos los campos son obligatorios')
+            alert('Fill all the fields')
         }
     })
 }
 
-async function mostrar(id, template, factor) {
+async function resolveData(id, template, factor) {
     const divProductos = document.getElementById(id);
     divProductos.innerHTML = await armarHtmlRemoto(template, factor);
 }
@@ -70,19 +73,4 @@ function armarHtmlRemoto(url, context) {
 
 function buscarPlantilla(url) {
     return fetch(url).then(res => res.text())
-}
-
-function eliminarProducto(id) {
-    socket.emit('eliminarProducto', id);
-}
-
-function editarProducto(id) {
-    const title = document.getElementById('title').value
-    const price = document.getElementById('price').value
-    const thumbnail = document.getElementById('thumbnail').value
-    if(title.length>0 && price.length>0 && thumbnail.length>0){
-        socket.emit('editarProducto', id, { title, price, thumbnail });
-    } else {
-        alert('Todos los campos son obligatorios')
-    }
 }
